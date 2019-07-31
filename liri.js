@@ -13,12 +13,12 @@ var searchTerm = process.argv[3];
 // Conditional for Spotify query
 if (searchMethod === "spotify-this-song") {
     spotify
-        .search({ type: 'track', query: 'All the Small Things' })
+        .search({ type: 'track', query: searchTerm })
         .then(function (response) {
-            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
-            console.log(JSON.stringify(response.tracks.items[0].name));
-            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
-            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
+            console.log("Artist: " + response.tracks.items[0].artists[0]["name"]);
+            console.log("Song: " + response.tracks.items[0].name);
+            console.log("Listen to the song: " + response.tracks.items[0].album.artists[0].external_urls.spotify);
+            console.log("Album: " + response.tracks.items[0].album.name);
         })
         .catch(function (err) {
             console.log(err);
