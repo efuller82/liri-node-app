@@ -1,20 +1,34 @@
+// Next 3 lines are to get spotify keys from keys.js and .env
 require("dotenv").config();
-
 var keys = require("./keys.js");
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify(keys.spotify);
 
-//var spotify = new Spotify(keys.spotify);
 
 // variable for what we're going to do ie: "concert-this", "spotify-this-song", "movie-this", "do-what-it-says"
-var searchTerm = process.argv[2];
+var searchMethod = process.argv[2];
+// variable for artist or movie 
+var searchTerm = process.argv[3];
 
-// Here I am going handle the "concert-this" command
-// I will need:  1. Name of venue, 2. venue location, 3. date of the event (using moment to format as "MM/DD/YYYY")
+// Conditional for Spotify query
+if (searchMethod === "spotify-this-song") {
+    spotify
+        .search({ type: 'track', query: 'All the Small Things' })
+        .then(function (response) {
+            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
+            console.log(JSON.stringify(response.tracks.items[0].name));
+            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
+            console.log(JSON.stringify(response.tracks.items[0].artists[0]["name"]));
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
 
-var movieName = process.argv[3];
-
-if (searchTerm === "movie-this") {
+// Conditional for movie search
+if (searchMethod === "movie-this") {
     var axios = require("axios");
-    axios.get("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy").then(
+    axios.get("http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy").then(
         function (response) {
             console.log(response.data.Title);
             console.log(response.data.Year);
