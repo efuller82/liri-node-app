@@ -10,34 +10,50 @@ var searchMethod = process.argv[2];
 // variable for artist or movie 
 var searchTerm = process.argv[3];
 
+
+
+
 // Conditional for Spotify query
+// conditional for empty/null song search
+if ((searchMethod === "spotify-this-song") && (searchTerm == null)) {
+    searchTerm = "The Sign Ace of Base";
+}
+
+if ((searchMethod === "movie-this") && (searchTerm == null)) {
+    searchTerm = "Mr. Nobody";
+}
 if (searchMethod === "spotify-this-song") {
     spotify
         .search({ type: 'track', query: searchTerm })
         .then(function (response) {
+            console.log("_____________________________________");
             console.log("Artist: " + response.tracks.items[0].artists[0]["name"]);
             console.log("Song: " + response.tracks.items[0].name);
             console.log("Listen to the song: " + response.tracks.items[0].album.artists[0].external_urls.spotify);
             console.log("Album: " + response.tracks.items[0].album.name);
+            console.log("_____________________________________");
         })
         .catch(function (err) {
             console.log(err);
         });
 }
 
+
 // Conditional for movie search
 if (searchMethod === "movie-this") {
     var axios = require("axios");
     axios.get("http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy").then(
         function (response) {
-            console.log(response.data.Title);
-            console.log(response.data.Year);
-            console.log(response.data.Ratings[0]);
-            console.log(response.data.Ratings[1]);
-            console.log(response.data.Country);
-            console.log(response.data.Language);
-            console.log(response.data.Plot);
-            console.log(response.data.Actors);
+            console.log("________________________________________");
+            console.log("Title: " + response.data.Title);
+            console.log("Year: " + response.data.Year);
+            console.log("IMDB Rating: " + response.data.Ratings[0].Value);
+            console.log("Rotten Tomatoes: " + response.data.Ratings[1].Value);
+            console.log("Country: " + response.data.Country);
+            console.log("Language: " + response.data.Language);
+            console.log("Plot: " + response.data.Plot);
+            console.log("Starring: " + response.data.Actors);
+            console.log("________________________________________");
         })
         .catch(function (error) {
             if (error.response) {
@@ -66,10 +82,11 @@ if (searchMethod === "concert-this") {
     axios
         .get(queryUrl)
         .then(function (response) {
+            console.log("_____________________________________________");
             console.log("Venue name: " + response.data[0].venue.name);
             console.log("City: " + response.data[0].venue.city);
             console.log("Date: " + moment(response.data[0].datetime).format('MM/DD/YYYY'));
-
+            console.log("_____________________________________________");
         })
         .catch(function (error) {
             if (error.response) {
