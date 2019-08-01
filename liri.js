@@ -4,11 +4,14 @@ var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 
-
 // variable for what we're going to do ie: "concert-this", "spotify-this-song", "movie-this", "do-what-it-says"
 var searchMethod = process.argv[2];
 // variable for artist or movie 
 var searchTerm = process.argv[3];
+
+// next two lines are to clean up the look of the log.txt file
+var newLine = "\r\n";
+var topBottomBar = "_________________________________________________";
 
 // conditional for empty/null song search; these lines have to be here because they set the
 // variables before the function is run
@@ -25,12 +28,23 @@ function spotifyThisSong() {
     spotify
         .search({ type: 'track', query: searchTerm })
         .then(function (response) {
+            // stored in variables so info can be easily used to append to log
+            var artist = response.tracks.items[0].artists[0]["name"];
+            var song = response.tracks.items[0].name;
+            var songUrl = response.tracks.items[0].album.artists[0].external_urls.spotify;
+            var album = response.tracks.items[0].album.name;
             console.log("_____________________________________");
-            console.log("Artist: " + response.tracks.items[0].artists[0]["name"]);
-            console.log("Song: " + response.tracks.items[0].name);
-            console.log("Listen to the song: " + response.tracks.items[0].album.artists[0].external_urls.spotify);
-            console.log("Album: " + response.tracks.items[0].album.name);
+            console.log("Artist: " + artist);
+            console.log("Song: " + song);
+            console.log("Listen to the song: " + songUrl);
+            console.log("Album: " + album);
             console.log("_____________________________________");
+            // using fs to append results to log.txt
+            var fs = require('fs');
+            fs.appendFile('log.txt', topBottomBar + newLine + artist + newLine + song + newLine + songUrl + newLine + album + newLine + topBottomBar + newLine, function (err) {
+                if (err) throw err;
+            })
+
         })
         .catch(function (err) {
             console.log(err);
@@ -42,16 +56,29 @@ function movieThis() {
     var axios = require("axios");
     axios.get("http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy").then(
         function (response) {
+            var movieTitle = response.data.Title;
+            var movieYear = response.data.Year;
+            var imdbRating = response.data.Ratings[0].Value;
+            var tomatoeRating = response.data.Ratings[1].Value;
+            var movieCountry = response.data.Country;
+            var movieLanguage = response.data.Language;
+            var moviePlot = response.data.Plot;
+            var movieStars = response.data.Actors;
             console.log("________________________________________");
-            console.log("Title: " + response.data.Title);
-            console.log("Year: " + response.data.Year);
-            console.log("IMDB Rating: " + response.data.Ratings[0].Value);
-            console.log("Rotten Tomatoes: " + response.data.Ratings[1].Value);
-            console.log("Country: " + response.data.Country);
-            console.log("Language: " + response.data.Language);
-            console.log("Plot: " + response.data.Plot);
-            console.log("Starring: " + response.data.Actors);
+            console.log("Title: " + movieTitle);
+            console.log("Year: " + movieYear);
+            console.log("IMDB Rating: " + imdbRating);
+            console.log("Rotten Tomatoes: " + tomatoeRating);
+            console.log("Country: " + movieCountry);
+            console.log("Language: " + movieLanguage);
+            console.log("Plot: " + moviePlot);
+            console.log("Starring: " + movieStars);
             console.log("________________________________________");
+            // appending to log.txt
+            var fs = require('fs')
+            fs.appendFile('log.txt', topBottomBar + newLine + movieTitle + newLine + movieYear + newLine + imdbRating + newLine + tomatoeRating + newLine + movieCountry + newLine + movieLanguage + newLine + moviePlot + newLine + movieStars + newLine + topBottomBar + newLine, function (err) {
+                if (err) throw err;
+            })
         })
         .catch(function (error) {
             if (error.response) {
@@ -80,11 +107,21 @@ function concertThis() {
     axios
         .get(queryUrl)
         .then(function (response) {
+            //variables for the data
+            var venue = response.data[0].venue.name;
+            var city = response.data[0].venue.city;
+            var date = moment(response.data[0].datetime).format('MM/DD/YYYY');
             console.log("_____________________________________________");
-            console.log("Venue name: " + response.data[0].venue.name);
-            console.log("City: " + response.data[0].venue.city);
-            console.log("Date: " + moment(response.data[0].datetime).format('MM/DD/YYYY'));
+            console.log("Venue name: " + venue);
+            console.log("City: " + city);
+            console.log("Date: " + date);
             console.log("_____________________________________________");
+            //logging data to log.txt
+            var fs = require('fs')
+            fs.appendFile('log.txt', topBottomBar + newLine + venue + newLine + city + newLine + date + newLine + topBottomBar + newLine, function (err) {
+                if (err) throw err;
+            })
+
         })
         .catch(function (error) {
             if (error.response) {
@@ -115,7 +152,6 @@ function doWhatItSays() {
         }
         // split the data and make it an array
         var dataArr = data.split(',');
-        console.log(dataArr);
         searchMethod = dataArr[0];
         searchTerm = dataArr[1];
         if (searchMethod === "concert-this") {
