@@ -10,19 +10,18 @@ var searchMethod = process.argv[2];
 // variable for artist or movie 
 var searchTerm = process.argv[3];
 
-
-
-
-// Conditional for Spotify query
-// conditional for empty/null song search
+// conditional for empty/null song search; these lines have to be here because they set the
+// variables before the function is run
 if ((searchMethod === "spotify-this-song") && (searchTerm == null)) {
     searchTerm = "The Sign Ace of Base";
 }
-
+// conditional for empty/null movie search)
 if ((searchMethod === "movie-this") && (searchTerm == null)) {
     searchTerm = "Mr. Nobody";
 }
-if (searchMethod === "spotify-this-song") {
+
+// function for spotify-this-song
+function spotifyThisSong() {
     spotify
         .search({ type: 'track', query: searchTerm })
         .then(function (response) {
@@ -38,9 +37,8 @@ if (searchMethod === "spotify-this-song") {
         });
 }
 
-
-// Conditional for movie search
-if (searchMethod === "movie-this") {
+//function for movie-this
+function movieThis() {
     var axios = require("axios");
     axios.get("http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy").then(
         function (response) {
@@ -74,8 +72,8 @@ if (searchMethod === "movie-this") {
         });
 }
 
-// Bands in town 
-if (searchMethod === "concert-this") {
+//function for concert-this
+function concertThis() {
     var queryUrl = "https://rest.bandsintown.com/artists/" + searchTerm + "/events?app_id=codingbootcamp";
     var axios = require("axios");
     var moment = require("moment");
@@ -105,4 +103,45 @@ if (searchMethod === "concert-this") {
             }
             console.log(error.config);
         });
+}
+
+// function for do-what-it-says
+function doWhatItSays() {
+    var fs = require('fs');
+    // here we're going to read from the random.txt file
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        // split the data and make it an array
+        var dataArr = data.split(',');
+        console.log(dataArr);
+        searchMethod = dataArr[0];
+        searchTerm = dataArr[1];
+        if (searchMethod === "concert-this") {
+            concertThis();
+        }
+        if (searchMethod === "spotify-this-song") {
+            spotifyThisSong();
+        }
+        if (searchMethod === "movie-this") {
+            movieThis();
+        }
+    })
+}
+// Bands in town 
+if (searchMethod === "concert-this") {
+    concertThis();
+}
+// Conditional for movie search
+if (searchMethod === "movie-this") {
+    movieThis();
+}
+// Conditional for Spotify query
+if (searchMethod === "spotify-this-song") {
+    spotifyThisSong();
+}
+//conditional for do-what-it-says
+if (searchMethod === "do-what-it-says") {
+    doWhatItSays();
 }
