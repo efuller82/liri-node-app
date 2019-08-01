@@ -1,5 +1,8 @@
 # liri-node-app
 
+Here is the link for the showcase: 
+https://drive.google.com/file/d/1OFtxlnMU2ZwX2yLmUS2vwXnOT0xhouDS/view
+
 This project uses to node to take in parameters on the command line and return to the user information regarding songs, artists' concerts, and movies. 
 
 1. concert-this
@@ -30,3 +33,4 @@ This project uses to node to take in parameters on the command line and return t
         The user enters to the command line:
             node liri.js do-what-it-says ### press enter ###
             The information will then be displayed in the command line as well as in the log.txt file. 
+
